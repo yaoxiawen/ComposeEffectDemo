@@ -1,8 +1,11 @@
 package com.example.composeeffectdemo
 
 import android.util.Log
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -111,5 +114,38 @@ private fun LandingScreen(onTimeOut: () -> Unit) {
         current()
     }
 }
+
+/**
+ * DisposableEffect
+ * key值改变或者组合函数离开组件树时会取消之前启动的协程，并会在取消协程前调用onDispose方法进行资源回收等相关操作
+ */
+@Composable
+fun Demo4(backDispatcher: OnBackPressedDispatcher) {
+    var addBackCallback by remember { mutableStateOf(false) }
+    Row {
+        Switch(checked = addBackCallback, onCheckedChange = {
+            addBackCallback = !addBackCallback
+        })
+        Text(text = if (addBackCallback) "add back callback" else "not add back callback")
+    }
+    if (addBackCallback) {
+        val backCallback = remember {
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Log.d("DisposableEffect", "onBack")
+                }
+            }
+        }
+        DisposableEffect(key1 = backDispatcher) {
+            backDispatcher.addCallback(backCallback)
+            //从组件树移除生效
+            onDispose {
+                Log.d("DisposableEffect", "onDispose")
+                backCallback.remove()
+            }
+        }
+    }
+}
+
 
 

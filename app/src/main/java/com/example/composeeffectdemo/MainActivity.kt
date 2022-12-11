@@ -2,6 +2,7 @@ package com.example.composeeffectdemo
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -12,7 +13,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeEffectDemoTheme {
-                Demo3()
+                Demo4(onBackPressedDispatcher)
             }
         }
     }
