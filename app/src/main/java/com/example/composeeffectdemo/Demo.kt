@@ -1,5 +1,6 @@
 package com.example.composeeffectdemo
 
+import android.media.Image
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
@@ -147,5 +148,31 @@ fun Demo4(backDispatcher: OnBackPressedDispatcher) {
     }
 }
 
+/**
+ * produceState
+ */
+@Composable
+fun Demo5() {
+    var index by remember { mutableStateOf(0) }
+    val repository = Demo5Repository()
+    val result = Demo5Result(index, repository)
+    Column {
+        Button(onClick = {
+            ++index
+        }) {
+            Text(text = "click:${index}")
+        }
+        Text(text = if (result.value is Result.Loading) "loading" else "ok")
+    }
+}
+
+@Composable
+private fun Demo5Result(index: Int, repository: Demo5Repository): State<Result<Image>> {
+    return produceState(initialValue = Result.Loading as Result<Image>, index, repository) {
+        //这里是主线程
+        val result = repository.load()
+        value = Result.Error
+    }
+}
 
 
