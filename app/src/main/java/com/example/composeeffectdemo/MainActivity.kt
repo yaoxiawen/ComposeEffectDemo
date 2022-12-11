@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeEffectDemoTheme {
-                Demo1()
+                Demo2()
             }
         }
     }
